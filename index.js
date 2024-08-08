@@ -24,7 +24,6 @@ const getTodos = () => {
     const taskToBeUpdated = tasks[taskId]
     if (!taskToBeUpdated) {
       console.log(`task with id: ${taskId} does not exist`)
-      rl.question('enter command:', onCommand)
       return;
     }
     taskToBeUpdated.status = !taskToBeUpdated.status
@@ -67,10 +66,11 @@ const getTodos = () => {
     })
   }
 
+  const doPrompt = () => {
+    rl.question('>', onCommand)
+  }
+
   const onCommand = (input) => {
-    const doPrompt = () => {
-      rl.question('enter command:', onCommand)
-    }
     const [command, ...userInput] = input.split(' ')
 
     if (command !== "undo" && command !== "ls") {
@@ -80,33 +80,28 @@ const getTodos = () => {
       }
     }
 
-    switch (command) {
-      case "undo":
-        undoPreviousAction()
-        doPrompt()
-        break;
-      case "q":
-        rl.close()
-        break;
-      case "ls":
-        listTodos()
-        doPrompt()
-        break;
-      case "add":
-        addTodo(userInput.join(" "))
-        doPrompt()
-        break;
-      case "check":
-        toggleTodoStatus(userInput)
-        doPrompt()
-        break;
-      default:
-        console.log(input, " command not supported")
-        doPrompt()
-
+    if (command === 'undo') {
+      undoPreviousAction()
     }
+    else if (command === 'q') {
+      rl.close()
+    }
+    else if (command === 'ls') {
+      listTodos()
+    }
+    else if (command === 'add') {
+      addTodo(userInput.join(" "))
+    }
+    else if (command === 'check') {
+      toggleTodoStatus(userInput)
+    }
+    else {
+      console.log(input, " command not supported")
+    }
+
+    doPrompt()
   }
-  rl.question('enter command:', onCommand)
+  doPrompt()
 }
 
 getTodos()
